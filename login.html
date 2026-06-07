@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login — SMAEK</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0f14;
+      --surface: #161922;
+      --border: #252830;
+      --accent: #6c63ff;
+      --accent2: #ff6584;
+      --text: #eef0f6;
+      --muted: #7a7f94;
+      --input-bg: #1e2230;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* animated blobs */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.18;
+      animation: drift 12s ease-in-out infinite alternate;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .blob-1 { width: 500px; height: 500px; background: var(--accent); top: -150px; left: -150px; animation-duration: 14s; }
+    .blob-2 { width: 400px; height: 400px; background: var(--accent2); bottom: -100px; right: -100px; animation-duration: 10s; animation-delay: -5s; }
+    .blob-3 { width: 300px; height: 300px; background: #00d2ff; top: 40%; left: 40%; animation-duration: 18s; animation-delay: -3s; }
+    @keyframes drift {
+      0%   { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30px, 40px) scale(1.08); }
+    }
+
+    .card {
+      position: relative; z-index: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 48px 44px;
+      width: 420px;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+    }
+
+    .logo {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 36px;
+    }
+    .logo-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .logo-text { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.2; }
+    .logo-text span { display: block; font-size: 11px; font-weight: 400; color: var(--muted); }
+
+    h1 { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; margin-bottom: 6px; }
+    .subtitle { font-size: 14px; color: var(--muted); margin-bottom: 36px; }
+
+    .field { margin-bottom: 18px; }
+    label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 8px; }
+    input {
+      width: 100%; padding: 14px 16px;
+      background: var(--input-bg); border: 1px solid var(--border);
+      border-radius: 12px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px;
+      outline: none; transition: border-color .2s, box-shadow .2s;
+    }
+    input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(108,99,255,.15); }
+
+    .role-select { margin-bottom: 28px; }
+    .role-select label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 10px; }
+    .role-pills { display: flex; gap: 10px; }
+    .role-pill {
+      flex: 1; padding: 11px; border-radius: 10px;
+      background: var(--input-bg); border: 1px solid var(--border);
+      color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+      cursor: pointer; text-align: center; transition: all .2s;
+    }
+    .role-pill.active { background: rgba(108,99,255,.15); border-color: var(--accent); color: var(--accent); }
+
+    .btn-login {
+      width: 100%; padding: 15px;
+      background: linear-gradient(135deg, var(--accent), #857aff);
+      border: none; border-radius: 12px;
+      color: #fff; font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700;
+      cursor: pointer; transition: opacity .2s, transform .15s;
+      letter-spacing: .03em;
+    }
+    .btn-login:hover { opacity: .9; transform: translateY(-1px); }
+    .btn-login:active { transform: translateY(0); }
+
+    .error-msg {
+      background: rgba(255,101,132,.12); border: 1px solid rgba(255,101,132,.3);
+      color: var(--accent2); border-radius: 10px; padding: 12px 14px;
+      font-size: 13px; margin-bottom: 18px; display: none;
+    }
+    .error-msg.show { display: block; }
+
+    .hint { text-align: center; margin-top: 24px; font-size: 13px; color: var(--muted); }
+    .hint strong { color: var(--text); }
+  </style>
+</head>
+<body>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <div class="card">
+    <div class="logo">
+      <div class="logo-icon">🎯</div>
+      <div class="logo-text">SMAEK <span>Sistem Manajemen Anggota Ekstrakurikuler</span></div>
+    </div>
+    <h1>Selamat Datang</h1>
+    <p class="subtitle">Masuk untuk melanjutkan ke dashboard</p>
+
+    <div class="error-msg" id="errMsg">Username atau password salah.</div>
+
+    <div class="field">
+      <label>Username</label>
+      <input type="text" id="username" placeholder="Masukkan username" />
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="Masukkan password" />
+    </div>
+
+    <div class="role-select">
+      <label>Role</label>
+      <div class="role-pills">
+        <div class="role-pill active" data-role="admin" onclick="selectRole(this)">👑 Admin</div>
+        <div class="role-pill" data-role="pembina" onclick="selectRole(this)">📋 Pembina</div>
+        <div class="role-pill" data-role="anggota" onclick="selectRole(this)">👤 Anggota</div>
+      </div>
+    </div>
+
+    <button class="btn-login" onclick="doLogin()">Masuk →</button>
+
+    <div class="hint">
+      Demo: <strong>admin / admin123</strong> · <strong>pembina / pembina123</strong> · <strong>anggota / anggota123</strong>
+    </div>
+  </div>
+
+  <script>
+    const USERS = [
+      { username: 'admin',   password: 'admin123',   role: 'admin',   name: 'Administrator' },
+      { username: 'pembina', password: 'pembina123', role: 'pembina', name: 'Pak Pembina' },
+      { username: 'anggota', password: 'anggota123', role: 'anggota', name: 'Budi Santoso' },
+    ];
+
+    let selectedRole = 'admin';
+    function selectRole(el) {
+      document.querySelectorAll('.role-pill').forEach(p => p.classList.remove('active'));
+      el.classList.add('active');
+      selectedRole = el.dataset.role;
+    }
+
+    function doLogin() {
+      const u = document.getElementById('username').value.trim();
+      const p = document.getElementById('password').value.trim();
+      const user = USERS.find(x => x.username === u && x.password === p && x.role === selectedRole);
+      if (user) {
+        localStorage.setItem('smaek_session', JSON.stringify(user));
+        window.location.href = 'dashboard.html';
+      } else {
+        document.getElementById('errMsg').classList.add('show');
+      }
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+    // redirect if already logged in
+    if (localStorage.getItem('smaek_session')) window.location.href = 'dashboard.html';
+  </script>
+</body>
+</html>
